@@ -1,0 +1,39 @@
+.auth-page {
+  height: 100%;
+}
+
+.auth-page__title {
+  text-align: center;
+  line-height: 1.4;
+  font-weight: 700;
+  font-size: 35px;
+}
+
+.auth-page__sub-title {
+  font-weight: 500;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+.auth-page__container {
+  margin: 0 auto;
+  padding: 0px 15px;
+  width: 350px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-page-form {
+  margin-top: 25px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-input {
+  width: 100%;
+}

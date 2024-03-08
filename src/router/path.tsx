@@ -1,7 +1,14 @@
 import Auth from "@/pages/auth/Auth";
+import Chat from "@/pages/chat/Chat";
 
-import { RouteObject } from "react-router-dom";
+import { Navigate, RouteObject } from "react-router-dom";
 
-export const publicRoutes: RouteObject[] = [{ path: "/auth", element: <Auth /> }];
+export const publicRoutes: RouteObject[] = [
+  { path: "/auth", element: <Auth /> },
+  { path: "/*", element: <Navigate to={"/auth"} /> },
+];
 
-export const privateRoutes: RouteObject[] = [];
+export const privateRoutes: RouteObject[] = [
+  { path: "/chat", element: <Chat /> },
+  { path: "/*", element: <Navigate to={"/chat"} /> },
+];

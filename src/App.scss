@@ -1,9 +1,23 @@
 @import "https://fonts.googleapis.com/css?family=Montserrat:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic";
 @import "./common/vars";
+@import "./common/nullstyle";
+
+h1 {
+  font-size: 30px;
+}
 
 body {
   font-family: var(--main-font);
   color: white;
   font-size: 18px;
-  background-color: #212121;
+  background-color: rgb(16, 20, 24);
+}
+
+#root {
+  height: 100%;
+}
+[class*="__container"] {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0px 15px;
 }
