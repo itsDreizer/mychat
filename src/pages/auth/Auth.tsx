@@ -15,6 +15,7 @@ interface IAuthProps extends DefaultProps {}
 interface IAuthForm {
   email: string;
   password: string;
+  nickname?: string;
 }
 
 type AuthMode = "register" | "login";
@@ -34,14 +35,11 @@ const Auth: React.FC<IAuthProps> = () => {
     mode: "onSubmit",
   });
 
-  const dispatch = useAppDispatch();
-
   const onSubmit: SubmitHandler<IAuthForm> = async (data) => {
     setIsErrorVisible(false);
     setIsFormDisabled(true);
     const response = authMode === "register" ? await firebaseRegister(data) : await firebaseLogin(data);
 
-    console.log(response);
     if (typeof response === "string") {
       switch (response) {
         case "Firebase: Error (auth/invalid-credential).":
@@ -72,7 +70,29 @@ const Auth: React.FC<IAuthProps> = () => {
       <div className="auth-page__container">
         <h1 className="auth-page__title">MyChat</h1>
         <span className="auth-page__sub-title">{authMode === "login" ? "Вход" : "Регистрация"}</span>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="auth-page-form">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="auth-form">
+          {authMode === "register" ? (
+            <FormControl>
+              <InputLabel color={errors.nickname ? "error" : "secondary"}>Введите ник</InputLabel>
+              <OutlinedInput
+                disabled={isFormDisabled}
+                {...register("nickname", {
+                  required: "Заполните все поля!",
+                  onBlur: () => {
+                    setIsErrorVisible(false);
+                  },
+                })}
+                autoComplete="off"
+                color={errors.nickname ? "error" : "secondary"}
+                label="Введите ник"
+                classes={{
+                  root: "auth-input",
+                }}
+              />
+            </FormControl>
+          ) : (
+            false
+          )}
           <FormControl>
             <InputLabel color={errors.email ? "error" : "secondary"}>Введите почту</InputLabel>
             <OutlinedInput

@@ -5,7 +5,9 @@ export interface DefaultProps extends PropsWithChildren {
 }
 
 export interface IAuthProperties {
-  username?: string;
+  nickname?: string;
   email: string;
   password: string;
 }
+
+export type TMessageDeliveryState = "Отправлено" | "Прочитано" | "Загрузка";

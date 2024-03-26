@@ -1,0 +1,101 @@
+.messenger-page {
+  height: 100%;
+}
+
+.messenger-page__container {
+  height: 100%;
+  max-width: 100%;
+  display: flex;
+  padding: 0;
+}
+
+.controlls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+}
+.controlls-menu {
+  position: relative;
+}
+.controlls-menu__header {
+  border-bottom: 1px solid grey;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.controlls-menu__profile-img {
+  width: 45px;
+  height: 45px;
+}
+
+.controlls-menu__profile-id {
+  cursor: pointer;
+}
+
+.controlls-menu__close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.signout-dialog {
+}
+
+.signout-dialog__background {
+  background-color: var(--deep-dark);
+  background-image: none;
+}
+
+.controlls-list {
+  padding: 0px;
+}
+
+.controlls-list-item {
+  gap: 10px;
+}
+
+.controlls-list-item__button {
+}
+
+.controlls-list-item__icon {
+}
+
+.controlls-list-item__text {
+}
+
+.controlls__search {
+  width: 100%;
+  margin-right: 30px;
+
+  fieldset {
+    border-radius: 100px;
+    border-width: 1px !important;
+    border-color: rgba(255, 255, 255, 0.23) !important;
+  }
+  input {
+  }
+}
+
+.chats {
+  flex: 0 1 30%;
+  max-width: 30%;
+}
+.opened-chat {
+  position: relative;
+  flex: 1 1 auto;
+  background: url(../../images/wallpaper.jpg) no-repeat;
+  background-size: cover;
+}
+
+.opened-chat__starter {
+  background-color: var(--deep-dark);
+  padding: 6px;
+  border-radius: 11px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

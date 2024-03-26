@@ -1,5 +1,5 @@
 import Auth from "@/pages/auth/Auth";
-import Chat from "@/pages/chat/Chat";
+import Messenger from "@/pages/messenger/Messenger";
 
 import { Navigate, RouteObject } from "react-router-dom";
 
@@ -9,6 +9,6 @@ export const publicRoutes: RouteObject[] = [
 ];
 
 export const privateRoutes: RouteObject[] = [
-  { path: "/chat", element: <Chat /> },
-  { path: "/*", element: <Navigate to={"/chat"} /> },
+  { path: "/messenger", element: <Messenger /> },
+  { path: "/*", element: <Navigate to={"/messenger"} /> },
 ];

@@ -1,7 +1,8 @@
-import { setIsAuth } from "@/redux/reducers/AuthSlice";
 import { IAuthProperties } from "@/types";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { IUserData } from "./types";
+import { doc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA-MfCPYcH_AeRrmaN4ISGw6aE7QKjeERA",
@@ -14,12 +15,21 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
+export const firestore = getFirestore(firebaseApp);
 
 export const auth = getAuth();
 
-export const firebaseRegister = async ({ email, password }: IAuthProperties) => {
+export const firebaseRegister = async ({ email, password, nickname }: IAuthProperties) => {
   try {
-    return await createUserWithEmailAndPassword(auth, email, password);
+    const resultOfRegistration = await createUserWithEmailAndPassword(auth, email, password);
+    const user = resultOfRegistration.user;
+    await updateProfile(user, { displayName: nickname });
+    await setDoc(doc(firestore, "users", user.uid), {
+      nickname,
+      id: `@id${user.uid.slice(0, 8)}`,
+      userId: user.uid,
+    });
+    return resultOfRegistration;
   } catch (error: any) {
     return error.message;
   }
@@ -32,3 +42,15 @@ export const firebaseLogin = async ({ email, password }: IAuthProperties) => {
   }
 };
 
+export const firebaseUpdateProfile = async (userData: IUserData) => {
+  try {
+    if (auth.currentUser) {
+      updateDoc(doc(firestore, "users", auth.currentUser.uid), {
+        ...userData,
+      });
+      return await updateProfile(auth.currentUser, { displayName: userData.nickname, photoURL: userData.photoURL });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
