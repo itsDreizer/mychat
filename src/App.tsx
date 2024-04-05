@@ -16,6 +16,7 @@ const myTheme = createTheme({
   palette: {
     mode: "dark",
   },
+
   typography: {
     fontFamily: "Montserrat",
   },
@@ -25,7 +26,14 @@ const App: React.FC = () => {
   const isAuthLoading = useAppSelector((state) => {
     return state.authReducer.isAuthLoading;
   });
+
   const [user, loading, error] = useAuthState(auth);
+
+  useEffect(() => {
+    if (error) {
+      console.log(error);
+    }
+  }, [error]);
 
   if (loading || isAuthLoading) {
     return <PageLoader />;

@@ -13,6 +13,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Snackbar,
   TextField,
   ToggleButton,
 } from "@mui/material";
@@ -28,6 +29,8 @@ import { IUserData } from "@/API/types";
 import { DefaultProps } from "@/types";
 import MenuModal from "@/components/UI/menuModal/MenuModal";
 import LiButton from "@/components/UI/liButton/LiButton";
+import CustomMUISnackbar from "@/components/UI/customMUISnackbar/CustomMUISnackbar";
+import ProfileMenu from "@/components/profileMenu/ProfileMenu";
 
 interface IMessengerControllsProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -40,6 +43,8 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
   const [user, userLoading, userError] = useAuthState(auth);
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
   const [isSignOutDialogVisible, setIsSignOutDialogVisible] = useState<boolean>(false);
+  const [isClipboardSnackbarVisible, setIsClipboardSnackbarVisible] = useState<boolean>(false);
+  const [isProfileMenuVisible, setIsProfileMenuVisible] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
@@ -56,7 +61,16 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
         <header className="controlls-menu__header">
           <Avatar className="controlls-menu__profile-img" src={userData?.photoURL} />
           <div className="controlls-menu__profile-nickname">{userData?.nickname}</div>
-          <Link color={"secondary"} underline="none" className="controlls-menu__profile-id">
+          <Link
+            onClick={(e) => {
+              if (e.currentTarget.textContent) {
+                navigator.clipboard.writeText(e.currentTarget.textContent);
+                setIsClipboardSnackbarVisible(true);
+              }
+            }}
+            color={"secondary"}
+            underline="none"
+            className="controlls-menu__profile-id">
             {userData?.id}
           </Link>
           <ToggleButton
@@ -68,16 +82,28 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
           </ToggleButton>
         </header>
         <List className="controlls-list">
-          <LiButton className="controlls-list-item" Icon={<AccountBox />} text="Изменить профиль" />
-          <LiButton className="controlls-list-item" Icon={<HelpCenter />} text="О проекте" />
-          <LiButton
-            onClick={() => {
-              setIsSignOutDialogVisible(true);
-            }}
-            className="controlls-list-item"
-            Icon={<ExitToApp />}
-            text="Выйти из аккаунта"
-          />
+          <li className="controlls-list-item">
+            <LiButton
+              onClick={() => {
+                setIsMenuVisible(false);
+                setIsProfileMenuVisible(true);
+              }}
+              Icon={<AccountBox />}
+              text="Мой профиль"
+            />
+          </li>
+          <li className="controlls-list-item">
+            <LiButton Icon={<HelpCenter />} text="О проекте" />
+          </li>
+          <li className="controlls-list-item">
+            <LiButton
+              onClick={() => {
+                setIsSignOutDialogVisible(true);
+              }}
+              Icon={<ExitToApp />}
+              text="Выйти из аккаунта"
+            />
+          </li>
         </List>
         <Dialog
           classes={{ root: "signout-dialog", paper: "signout-dialog__background" }}
@@ -105,7 +131,26 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
           </DialogActions>
         </Dialog>
       </MenuModal>
+      <ProfileMenu
+        userData={userData}
+        open={isProfileMenuVisible}
+        handleClose={() => {
+          setIsProfileMenuVisible(false);
+        }}
+      />
+      <CustomMUISnackbar
+        onClose={(e, reason) => {
+          if (reason === "clickaway") {
+            return;
+          }
+          setIsClipboardSnackbarVisible(false);
+        }}
+        open={isClipboardSnackbarVisible}
+        message={"Скопировано в буфер обмена!"}
+        autoHideDuration={3000}
+      />
       <TextField
+        autoComplete="off"
         onChange={(e) => setSearchQuery(e.currentTarget.value)}
         placeholder="Поиск"
         size="small"

@@ -23,16 +23,28 @@
   padding: 15px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
 }
 
 .controlls-menu__profile-img {
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
+}
+
+.controlls-menu__profile-nickname {
+  max-width: 99%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .controlls-menu__profile-id {
   cursor: pointer;
+  max-width: 99%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .controlls-menu__close-button {
@@ -47,6 +59,7 @@
 .signout-dialog__background {
   background-color: var(--deep-dark);
   background-image: none;
+  margin: 0px 15px;
 }
 
 .controlls-list {
@@ -98,4 +111,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.search-body {
+}
+.search-body__mode {
+  padding: 15px;
+  background-color: var(--deep-blue);
 }

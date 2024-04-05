@@ -1,8 +1,16 @@
 import { IAuthProperties } from "@/types";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 import { IUserData } from "./types";
 import { doc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA-MfCPYcH_AeRrmaN4ISGw6aE7QKjeERA",
@@ -16,8 +24,11 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firestore = getFirestore(firebaseApp);
+export const firebaseStorage = getStorage(firebaseApp);
 
 export const auth = getAuth();
+
+setPersistence(auth, browserLocalPersistence);
 
 export const firebaseRegister = async ({ email, password, nickname }: IAuthProperties) => {
   try {
@@ -26,7 +37,7 @@ export const firebaseRegister = async ({ email, password, nickname }: IAuthPrope
     await updateProfile(user, { displayName: nickname });
     await setDoc(doc(firestore, "users", user.uid), {
       nickname,
-      id: `@id${user.uid.slice(0, 8)}`,
+      id: `@id${user.uid.slice(0, 8).toLowerCase()}`,
       userId: user.uid,
     });
     return resultOfRegistration;

@@ -11,21 +11,19 @@ interface ILiButtonProps extends DefaultProps {
 }
 
 const LiButton: React.FC<ILiButtonProps> = (props) => {
-  const { text, Icon, onClick, className } = props;
+  const { text, Icon, onClick, className, children } = props;
 
   const classes = {
-    button: className ? `${className}__button` : "",
     icon: className ? `${className}__icon` : "",
     text: className ? `${className}__text` : "",
   };
 
   return (
-    <ListItem className={`list-item ${className}`}>
-      <ListItemButton onClick={onClick} className={`list-item__button ${classes.button}`}>
-        <ListItemIcon className={`list-item__icon ${classes.icon}`}>{Icon}</ListItemIcon>
-        <ListItemText primary={text} className={`list-item__text ${classes.text}`} />
-      </ListItemButton>
-    </ListItem>
+    <ListItemButton onClick={onClick} className={`list-item-button ${className}`}>
+      {Icon ? <ListItemIcon className={`list-item-button__icon ${classes.icon}`}>{Icon}</ListItemIcon> : false}
+      {text ? <ListItemText primary={text} className={`list-item-button__text ${classes.text}`} /> : false}
+      {children}
+    </ListItemButton>
   );
 };
 

@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput } from "@mui/material";
+import { FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, TextField } from "@mui/material";
 
 import { firebaseLogin, firebaseRegister } from "@/API/firebase";
 import { useAppDispatch } from "@/redux/hooks";
@@ -75,6 +75,7 @@ const Auth: React.FC<IAuthProps> = () => {
             <FormControl>
               <InputLabel color={errors.nickname ? "error" : "secondary"}>Введите ник</InputLabel>
               <OutlinedInput
+                inputProps={{ maxLength: 15 }}
                 disabled={isFormDisabled}
                 {...register("nickname", {
                   required: "Заполните все поля!",
@@ -82,6 +83,7 @@ const Auth: React.FC<IAuthProps> = () => {
                     setIsErrorVisible(false);
                   },
                 })}
+                type="text"
                 autoComplete="off"
                 color={errors.nickname ? "error" : "secondary"}
                 label="Введите ник"

@@ -12,6 +12,12 @@
 }
 .chat-preview__block-img {
 }
+
+.chat-preview__avatar {
+  width: 45px;
+  height: 45px;
+}
+
 .chat-preview__body {
   width: 100%;
   display: flex;
@@ -51,6 +57,14 @@
 .chat-preview__last-message {
   font-size: 15px;
   opacity: 0.8;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 1px 0px;
+}
+
+.chat-preview__profile-id {
+  font-size: 15px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

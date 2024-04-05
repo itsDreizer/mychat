@@ -21,3 +21,8 @@ body {
   margin: 0 auto;
   padding: 0px 15px;
 }
+
+.hidden-input {
+  position: absolute;
+  visibility: hidden;
+}
