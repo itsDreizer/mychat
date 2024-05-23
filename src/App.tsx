@@ -1,16 +1,14 @@
-import React, { useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import React, { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import "./App.scss";
-import { publicRoutes, privateRoutes } from "./router/path";
-import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { auth } from "./API/firebase";
-import { checkAuth, setIsAuth, setIsAuthLoading } from "./redux/reducers/AuthSlice";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { CircularProgress, StyledEngineProvider } from "@mui/material";
-import PageLoader from "./pages/pageLoader/PageLoader";
+import { StyledEngineProvider } from "@mui/material";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./API/firebase";
+import { useAppSelector } from "./redux/hooks";
+import { privateRoutes, publicRoutes } from "./router/path";
+import "./App.scss";
+import PageLoader from "./pages/pageLoader/PageLoader";
 
 const myTheme = createTheme({
   palette: {

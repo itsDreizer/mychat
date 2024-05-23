@@ -45,6 +45,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding: 1px 0px;
 }
 
 .controlls-menu__close-button {
@@ -67,7 +68,6 @@
 }
 
 .controlls-list-item {
-  gap: 10px;
 }
 
 .controlls-list-item__button {
@@ -95,6 +95,10 @@
 .chats {
   flex: 0 1 30%;
   max-width: 30%;
+  @media (max-width: 1400px) {
+    flex: 0 1 40%;
+    max-width: 40%;
+  }
 }
 .opened-chat {
   position: relative;
@@ -111,6 +115,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  line-height: 1.4;
 }
 
 .search-body {

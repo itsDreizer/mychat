@@ -5,7 +5,7 @@ interface ISearchListProps extends DefaultProps {
   mode: "local" | "global";
 }
 
-const SearchList: React.FC<ISearchListProps> = (props) => {
+const ChatsSearchList: React.FC<ISearchListProps> = (props) => {
   const { mode, children } = props;
   return (
     <div className="search-body">
@@ -15,4 +15,4 @@ const SearchList: React.FC<ISearchListProps> = (props) => {
   );
 };
 
-export default SearchList;
+export default ChatsSearchList;

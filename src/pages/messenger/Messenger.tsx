@@ -1,29 +1,26 @@
-import { auth, firebaseStorage, firebaseUpdateProfile, firestore } from "@/API/firebase";
+import { auth, firestore } from "@/API/firebase";
 
-import { getAuth, signOut } from "firebase/auth";
 import React, { useEffect, useMemo, useState } from "react";
-import { useCollectionData, useCollection, useDocumentData } from "react-firebase-hooks/firestore";
-import { useDownloadURL, useUploadFile } from "react-firebase-hooks/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 
-import savedMessages from "../../images/icons/saved-messages.jpg";
+import savedMessages from "@/images/icons/saved-messages.jpg";
 
-import { DocumentData, collection, doc, query, setDoc, updateDoc, where } from "firebase/firestore";
-import MessengerControlls from "./MessengerControlls";
 import { IUserData } from "@/API/types";
-import { Button, List, ListItem } from "@mui/material";
-import PageLoader from "../pageLoader/PageLoader";
 import ChatPreview from "@/components/UI/chatPreview/ChatPreview";
-import SearchList from "./SearchList";
+import { collection, doc, query } from "firebase/firestore";
+import PageLoader from "../pageLoader/PageLoader";
+import MessengerControlls from "./MessengerControlls";
+import ChatsSearchList from "./ChatsSearchList";
 import "./Messenger.scss";
+import UnauthorizedPage from "../errors/UnauthorizedPage";
 
 const Messenger: React.FC = () => {
-  // const [value] = useDownloadURL(storageRef(firebaseStorage, "gs://chat-be064.appspot.com/"));
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [user] = useAuthState(auth);
   const [users, usersLoading] = useCollectionData<IUserData>(query(collection(firestore, "users")));
-  const [userData, userDataLoading] = useDocumentData<IUserData>(user ? doc(firestore, "users", user.uid) : null);
+  const [userData, userDataLoading] = useDocumentData<IUserData>(user && doc(firestore, "users", user.uid));
 
   const globalSearchedUsers = useMemo(() => {
     return users?.filter((user) => {
@@ -42,6 +39,10 @@ const Messenger: React.FC = () => {
     return <PageLoader />;
   }
 
+  if (!userData) {
+    return <UnauthorizedPage />;
+  }
+
   return (
     <main className="messenger-page">
       <div className="messenger-page__container">
@@ -49,7 +50,7 @@ const Messenger: React.FC = () => {
           <MessengerControlls userData={userData} setSearchQuery={setSearchQuery} />
           {searchQuery ? (
             searchQuery[0] === "@" ? (
-              <SearchList mode="global">
+              <ChatsSearchList mode="global">
                 {globalSearchedUsers?.map((user) => {
                   return (
                     <li key={user.userId}>
@@ -62,7 +63,7 @@ const Messenger: React.FC = () => {
                     </li>
                   );
                 })}
-              </SearchList>
+              </ChatsSearchList>
             ) : (
               false
             )

@@ -34,7 +34,7 @@ import ProfileMenu from "@/components/profileMenu/ProfileMenu";
 
 interface IMessengerControllsProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  userData: IUserData | undefined;
+  userData: IUserData;
 }
 
 const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
@@ -132,6 +132,7 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
         </Dialog>
       </MenuModal>
       <ProfileMenu
+        setIsClipboardSnackbarVisible={setIsClipboardSnackbarVisible}
         userData={userData}
         open={isProfileMenuVisible}
         handleClose={() => {

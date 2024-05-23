@@ -9,7 +9,7 @@ import {
   browserLocalPersistence,
 } from "firebase/auth";
 import { IUserData } from "./types";
-import { doc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -63,5 +63,17 @@ export const firebaseUpdateProfile = async (userData: IUserData) => {
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const isIdExists = async (id: string) => {
+  try {
+    const snapshot = await getDocs(query(collection(firestore, "users"), where("id", "==", `${id}`)));
+    return snapshot.docs.length;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      return error.message;
+    }
   }
 };

@@ -14,8 +14,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  border-bottom: var(--deep-dark) solid 6px;
+  padding: 10px 15px;
+  border-bottom: white solid 1px;
 }
 
 .profile-menu__title {
@@ -27,7 +27,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 20px;
+  padding-top: 20px;
 }
 .profile-menu__block-img {
   position: relative;
@@ -55,6 +55,55 @@
   }
 }
 
+.profile-change-dialog {
+}
+
+.profile-change-dialog__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-change-dialog__paper {
+  width: 100%;
+  background-color: var(--deep-blue);
+  background-image: none;
+  margin: 0px 15px;
+}
+
+.profile-change-dialog__input {
+  width: 100%;
+  label {
+    font-size: 18px;
+  }
+  input {
+    font-size: 18px;
+  }
+}
+
+.url-dialog {
+}
+
+.url-dialog__paper {
+}
+
+.url-dialog__title {
+}
+
+.url-dialog__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.url-dialog__input {
+}
+
+.url-dialog__button {
+}
+
 .profile-menu__nickname {
   font-size: 20px;
   font-weight: 500;
@@ -63,10 +112,23 @@
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 99%;
+  padding: 1px 0px;
+}
+
+.profile-menu__id {
+  cursor: pointer;
+  color: var(--purple);
+  margin: 0 auto;
+  margin-top: -10px;
+  max-width: 99%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 1px 0px;
 }
 
 .profile-menu__bio-wrapper {
   position: relative;
+  line-height: 0;
 }
 
 .profile-menu__bio {
@@ -76,7 +138,7 @@
   background-color: transparent;
   color: white;
   font-size: 16px;
-  border-bottom: gray solid 1px;
+  border-bottom: white solid 1px;
 }
 
 .profile-menu__bio-length {
@@ -85,4 +147,20 @@
   right: 15px;
   transform: translate(0, -50%);
   font-size: 16px;
+}
+
+.profile-menu-list {
+}
+.profile-menu-list__item {
+}
+.profile-menu-list__button {
+}
+
+.id-dialog__hint {
+  padding: 16px 24px;
+}
+
+.id-dialog__hint-item {
+}
+.id-dialog__error-message {
 }
