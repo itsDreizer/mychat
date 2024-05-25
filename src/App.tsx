@@ -6,8 +6,8 @@ import { StyledEngineProvider } from "@mui/material";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./API/firebase";
 import { useAppSelector } from "./redux/hooks";
-import { privateRoutes, publicRoutes } from "./router/path";
 import "./App.scss";
+import { privateRoutes, publicRoutes } from "./router/path";
 import PageLoader from "./pages/pageLoader/PageLoader";
 
 const myTheme = createTheme({

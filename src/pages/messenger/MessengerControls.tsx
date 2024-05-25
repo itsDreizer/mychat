@@ -6,38 +6,29 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
-  Drawer,
   Link,
   List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Snackbar,
   TextField,
-  ToggleButton,
+  ToggleButton
 } from "@mui/material";
 
-import { AccountBox, Close, ExitToApp, FormatAlignLeft, HelpCenter, Info, Menu } from "@mui/icons-material";
-import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
-import { auth, firebaseUpdateProfile, firestore } from "@/API/firebase";
+import { auth } from "@/API/firebase";
+import { IUserData } from "@/API/types";
+import CustomMUISnackbar from "@/components/UI/customMUISnackbar/CustomMUISnackbar";
+import LiButton from "@/components/UI/liButton/LiButton";
+import MenuModal from "@/components/UI/menuModal/MenuModal";
+import ProfileMenu from "@/components/profileMenu/ProfileMenu";
 import { useAppDispatch } from "@/redux/hooks";
 import { setIsAuthLoading } from "@/redux/reducers/AuthSlice";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { doc } from "firebase/firestore";
-import { IUserData } from "@/API/types";
-import { DefaultProps } from "@/types";
-import MenuModal from "@/components/UI/menuModal/MenuModal";
-import LiButton from "@/components/UI/liButton/LiButton";
-import CustomMUISnackbar from "@/components/UI/customMUISnackbar/CustomMUISnackbar";
-import ProfileMenu from "@/components/profileMenu/ProfileMenu";
+import { AccountBox, Close, ExitToApp, HelpCenter, Menu } from "@mui/icons-material";
+import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 
-interface IMessengerControllsProps {
+interface IMessengerControlsProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   userData: IUserData;
 }
 
-const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
+const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
   const { setSearchQuery, userData } = props;
   const [signOut, signOutLoading, signOutError] = useSignOut(auth);
   const [user, userLoading, userError] = useAuthState(auth);
@@ -53,14 +44,14 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
   }, [signOutLoading]);
 
   return (
-    <div className="controlls">
+    <div className="controls">
       <ToggleButton onClick={() => setIsMenuVisible(true)} style={{ width: "40px", height: "40px" }} value={""}>
         <Menu />
       </ToggleButton>
       <MenuModal classes={{ root: "123" }} onClose={() => setIsMenuVisible(false)} open={isMenuVisible}>
-        <header className="controlls-menu__header">
-          <Avatar className="controlls-menu__profile-img" src={userData?.photoURL} />
-          <div className="controlls-menu__profile-nickname">{userData?.nickname}</div>
+        <header className="controls-menu__header">
+          <Avatar className="controls-menu__profile-img" src={userData?.photoURL} />
+          <div className="controls-menu__profile-nickname">{userData?.nickname}</div>
           <Link
             onClick={(e) => {
               if (e.currentTarget.textContent) {
@@ -70,19 +61,19 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
             }}
             color={"secondary"}
             underline="none"
-            className="controlls-menu__profile-id">
+            className="controls-menu__profile-id">
             {userData?.id}
           </Link>
           <ToggleButton
-            className="controlls-menu__close-button"
+            className="controls-menu__close-button"
             onClick={() => setIsMenuVisible(false)}
             style={{ width: "40px", height: "40px" }}
             value={""}>
             <Close />
           </ToggleButton>
         </header>
-        <List className="controlls-list">
-          <li className="controlls-list-item">
+        <List className="controls-list">
+          <li className="controls-list-item">
             <LiButton
               onClick={() => {
                 setIsMenuVisible(false);
@@ -92,10 +83,10 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
               text="Мой профиль"
             />
           </li>
-          <li className="controlls-list-item">
+          <li className="controls-list-item">
             <LiButton Icon={<HelpCenter />} text="О проекте" />
           </li>
-          <li className="controlls-list-item">
+          <li className="controls-list-item">
             <LiButton
               onClick={() => {
                 setIsSignOutDialogVisible(true);
@@ -121,8 +112,8 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
             <Button
               color={"secondary"}
               onClick={async () => {
-                const succes = await signOut();
-                if (succes) {
+                const success = await signOut();
+                if (success) {
                   dispatch(setIsAuthLoading(false));
                 }
               }}>
@@ -155,10 +146,10 @@ const MessengerControlls: React.FC<IMessengerControllsProps> = (props) => {
         onChange={(e) => setSearchQuery(e.currentTarget.value)}
         placeholder="Поиск"
         size="small"
-        className="controlls__search"
+        className="controls__search"
       />
     </div>
   );
 };
 
-export default MessengerControlls;
+export default MessengerControls;

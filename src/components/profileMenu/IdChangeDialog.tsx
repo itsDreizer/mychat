@@ -1,10 +1,10 @@
-import React, { ReactNode, useCallback, useState } from "react";
 import { firebaseUpdateProfile, isIdExists } from "@/API/firebase";
-import { Close } from "@mui/icons-material";
-import { Button, Dialog, DialogContent, DialogTitle, TextField, ToggleButton } from "@mui/material";
-import { debounce } from "lodash";
-import { IChangeDialogProps } from "./types";
 import Hint from "@/components/UI/hint/Hint";
+import { Close } from "@mui/icons-material";
+import { Dialog, DialogContent, DialogTitle, TextField, ToggleButton } from "@mui/material";
+import { debounce } from "lodash";
+import React, { useCallback, useState } from "react";
+import { IChangeDialogProps } from "./types";
 
 import InputMask from "react-input-mask";
 
@@ -28,7 +28,7 @@ const IdChangeDialog: React.FC<IChangeDialogProps> = (props) => {
       const result = await isIdExists(id);
       console.log(result);
 
-      if (result) {
+      if (result && id !== userData.id) {
         setError("Данный id уже занят.");
         return;
       }

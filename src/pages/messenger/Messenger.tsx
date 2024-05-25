@@ -10,7 +10,7 @@ import { IUserData } from "@/API/types";
 import ChatPreview from "@/components/UI/chatPreview/ChatPreview";
 import { collection, doc, query } from "firebase/firestore";
 import PageLoader from "../pageLoader/PageLoader";
-import MessengerControlls from "./MessengerControlls";
+import MessengerControls from "./MessengerControls";
 import ChatsSearchList from "./ChatsSearchList";
 import "./Messenger.scss";
 import UnauthorizedPage from "../errors/UnauthorizedPage";
@@ -47,7 +47,7 @@ const Messenger: React.FC = () => {
     <main className="messenger-page">
       <div className="messenger-page__container">
         <div className="chats">
-          <MessengerControlls userData={userData} setSearchQuery={setSearchQuery} />
+          <MessengerControls userData={userData} setSearchQuery={setSearchQuery} />
           {searchQuery ? (
             searchQuery[0] === "@" ? (
               <ChatsSearchList mode="global">
