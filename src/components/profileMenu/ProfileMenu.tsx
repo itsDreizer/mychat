@@ -1,6 +1,12 @@
 import { firebaseStorage, firebaseUpdateProfile } from "@/API/firebase";
 import { IUserData } from "@/API/types";
-import { CameraAlt, Close, DriveFileRenameOutline, Image as ImageIcon, Link as LinkIcon } from "@mui/icons-material";
+import {
+  CameraAlt,
+  Close,
+  DriveFileRenameOutline,
+  Image as ImageIcon,
+  Link as LinkIcon
+} from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -22,9 +28,8 @@ import LiButton from "../UI/liButton/LiButton";
 
 import { getDownloadURL, ref as storageRef } from "firebase/storage";
 import { useUploadFile } from "react-firebase-hooks/storage";
-import Hint from "../UI/hint/Hint";
-import NicknameChangeDialog from "./NicknameChangeDialog";
 import IdChangeDialog from "./IdChangeDialog";
+import NicknameChangeDialog from "./NicknameChangeDialog";
 import "./ProfileMenu.scss";
 
 interface IProfileMenuProps extends Omit<ModalProps, "children"> {
@@ -101,7 +106,7 @@ const ProfileMenu: React.FC<IProfileMenuProps> = (props) => {
                 onClose={() => {
                   setIsImagePopoverOpen(false);
                 }}>
-                <ul className="">
+                <ul>
                   <li>
                     <label>
                       <input

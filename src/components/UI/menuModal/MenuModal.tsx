@@ -8,8 +8,8 @@ const MenuModal: React.FC<IMenuModalProps> = (props) => {
   const { children, classes, ...otherProps } = props;
 
   const resultClasses: Partial<DrawerClasses> = {
-    root: `menu-modal ${classes?.root}`,
-    paper: `menu-modal__background ${classes?.paper}`,
+    root: classes ? `menu-modal ${classes.root}` : `menu-modal`,
+    paper: classes ? `menu-modal__background ${classes.paper}` : `menu-modal__background`,
   };
 
   return (

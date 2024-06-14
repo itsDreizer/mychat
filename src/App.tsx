@@ -4,11 +4,16 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { StyledEngineProvider } from "@mui/material";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./API/firebase";
-import { useAppSelector } from "./redux/hooks";
+import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
+
+import { auth, firestore } from "./API/firebase";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import "./App.scss";
 import { privateRoutes, publicRoutes } from "./router/path";
 import PageLoader from "./pages/pageLoader/PageLoader";
+import { setWindowWidth } from "./redux/reducers/CommonStatesSlice";
+import { IUserData } from "./API/types";
+import { doc } from "firebase/firestore";
 
 const myTheme = createTheme({
   palette: {
@@ -25,7 +30,10 @@ const App: React.FC = () => {
     return state.authReducer.isAuthLoading;
   });
 
+  const dispatch = useAppDispatch();
+
   const [user, loading, error] = useAuthState(auth);
+  const [userData, userDataLoading] = useDocumentData<IUserData>(user && doc(firestore, "users", user.uid));
 
   useEffect(() => {
     if (error) {
@@ -33,7 +41,13 @@ const App: React.FC = () => {
     }
   }, [error]);
 
-  if (loading || isAuthLoading) {
+  useEffect(() => {
+    window.onresize = () => {
+      dispatch(setWindowWidth(window.innerWidth));
+    };
+  }, []);
+
+  if (loading || isAuthLoading || userDataLoading) {
     return <PageLoader />;
   }
 

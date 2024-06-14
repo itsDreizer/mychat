@@ -22,18 +22,15 @@ const IdChangeDialog: React.FC<IChangeDialogProps> = (props) => {
 
   const updateId = useCallback(
     debounce(async (id: string) => {
-      console.log(id);
-
       id = "@" + id.toLowerCase();
       const result = await isIdExists(id);
-      console.log(result);
 
       if (result && id !== userData.id) {
         setError("Данный id уже занят.");
         return;
       }
 
-      firebaseUpdateProfile({ id });
+      await firebaseUpdateProfile({ id });
     }, 1000),
     []
   );

@@ -1,16 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import {
-  Avatar,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  Link,
-  List,
-  TextField,
-  ToggleButton
-} from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogTitle, Link, List, TextField, ToggleButton } from "@mui/material";
 
 import { auth } from "@/API/firebase";
 import { IUserData } from "@/API/types";
@@ -22,14 +12,16 @@ import { useAppDispatch } from "@/redux/hooks";
 import { setIsAuthLoading } from "@/redux/reducers/AuthSlice";
 import { AccountBox, Close, ExitToApp, HelpCenter, Menu } from "@mui/icons-material";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import { debounce } from "lodash";
 
 interface IMessengerControlsProps {
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  setLocalSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  setGlobalSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   userData: IUserData;
 }
 
 const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
-  const { setSearchQuery, userData } = props;
+  const { setLocalSearchQuery, setGlobalSearchQuery, userData } = props;
   const [signOut, signOutLoading, signOutError] = useSignOut(auth);
   const [user, userLoading, userError] = useAuthState(auth);
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
@@ -43,12 +35,14 @@ const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
     dispatch(setIsAuthLoading(signOutLoading));
   }, [signOutLoading]);
 
+  const debouncedSetGlobalSearchQuery = useCallback(debounce(setGlobalSearchQuery, 1000), []);
+
   return (
     <div className="controls">
       <ToggleButton onClick={() => setIsMenuVisible(true)} style={{ width: "40px", height: "40px" }} value={""}>
         <Menu />
       </ToggleButton>
-      <MenuModal classes={{ root: "123" }} onClose={() => setIsMenuVisible(false)} open={isMenuVisible}>
+      <MenuModal onClose={() => setIsMenuVisible(false)} open={isMenuVisible}>
         <header className="controls-menu__header">
           <Avatar className="controls-menu__profile-img" src={userData?.photoURL} />
           <div className="controls-menu__profile-nickname">{userData?.nickname}</div>
@@ -143,7 +137,18 @@ const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
       />
       <TextField
         autoComplete="off"
-        onChange={(e) => setSearchQuery(e.currentTarget.value)}
+        onChange={(e) => {
+          const value = e.currentTarget.value.toLowerCase();
+          if (value[0] === "@" || !value) {
+            debouncedSetGlobalSearchQuery(value);
+          } else {
+            setLocalSearchQuery(value);
+          }
+          if (!value) {
+            setLocalSearchQuery("");
+            setGlobalSearchQuery("");
+          }
+        }}
         placeholder="Поиск"
         size="small"
         className="controls__search"

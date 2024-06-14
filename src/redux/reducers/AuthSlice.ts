@@ -1,12 +1,12 @@
 import { auth } from "@/API/firebase";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IInitialState {
+interface IAuthState {
   isAuth: boolean;
   isAuthLoading: boolean;
 }
 
-const initialState: IInitialState = {
+const initialState: IAuthState = {
   isAuth: false,
   isAuthLoading: false,
 };

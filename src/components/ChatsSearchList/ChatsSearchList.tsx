@@ -1,5 +1,6 @@
 import { DefaultProps } from "@/types";
 import React from "react";
+import "./ChatSearchList.scss";
 
 interface ISearchListProps extends DefaultProps {
   mode: "local" | "global";
@@ -8,9 +9,9 @@ interface ISearchListProps extends DefaultProps {
 const ChatsSearchList: React.FC<ISearchListProps> = (props) => {
   const { mode, children } = props;
   return (
-    <div className="search-body">
-      <div className="search-body__mode">{mode === "local" ? "Локальный поиск" : "Глобальный поиск"}</div>
-      <ul className="search-body">{children}</ul>
+    <div className="chats-search">
+      <div className="chats-search__mode">{mode === "local" ? "Локальный поиск" : "Глобальный поиск"}</div>
+      <ul className="chats-search-body">{children}</ul>
     </div>
   );
 };

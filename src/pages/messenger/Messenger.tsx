@@ -1,6 +1,6 @@
-import { auth, firestore } from "@/API/firebase";
+import { auth, firestore, refreshOnline } from "@/API/firebase";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 
@@ -8,34 +8,55 @@ import savedMessages from "@/images/icons/saved-messages.jpg";
 
 import { IUserData } from "@/API/types";
 import ChatPreview from "@/components/UI/chatPreview/ChatPreview";
-import { collection, doc, query } from "firebase/firestore";
+import { Timestamp, collection, doc, query, where, DocumentData } from "firebase/firestore";
 import PageLoader from "../pageLoader/PageLoader";
 import MessengerControls from "./MessengerControls";
-import ChatsSearchList from "./ChatsSearchList";
-import "./Messenger.scss";
+import ChatsSearchList from "../../components/ChatsSearchList/ChatsSearchList";
 import UnauthorizedPage from "../errors/UnauthorizedPage";
+import { useSearch } from "@/hooks/useSearch";
+import Chat from "@/components/Chat/Chat";
+import "./Messenger.scss";
+import { useAppSelector } from "@/redux/hooks";
+import { CSSTransition } from "react-transition-group";
 
 const Messenger: React.FC = () => {
-  const [isSelected, setIsSelected] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [user] = useAuthState(auth);
-  const [users, usersLoading] = useCollectionData<IUserData>(query(collection(firestore, "users")));
+  const [selectedChat, setSelectedChat] = useState<{ userId: string; isSelected: boolean }>({
+    userId: "",
+    isSelected: false,
+  });
+  const [user, userLoading] = useAuthState(auth);
   const [userData, userDataLoading] = useDocumentData<IUserData>(user && doc(firestore, "users", user.uid));
 
-  const globalSearchedUsers = useMemo(() => {
-    return users?.filter((user) => {
-      if (user.id === userData?.id) {
-        return;
-      }
-      return user.id?.toLowerCase().includes(searchQuery.toLowerCase());
-    });
-  }, [searchQuery, users]);
+  const openedChatRef = useRef(null);
+
+  const {
+    searchedUser,
+    searchedUserLoading,
+    setLocalSearchQuery,
+    setGlobalSearchQuery,
+    localSearchQuery,
+    globalSearchQuery,
+  } = useSearch();
+
+  const windowWidth = useAppSelector((state) => {
+    return state.commonStatesReducer.windowWidth;
+  });
+
+  // const localSearchedChat = () => {
+
+  // }
 
   useEffect(() => {
+    refreshOnline();
+    const intervalId = setInterval(refreshOnline, 60000);
     document.title = "Мессенджер";
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
-  if (userDataLoading) {
+  if (userDataLoading || userLoading) {
     return <PageLoader />;
   }
 
@@ -43,39 +64,53 @@ const Messenger: React.FC = () => {
     return <UnauthorizedPage />;
   }
 
+  const isNoResult =
+    (localSearchQuery || globalSearchQuery) && (!searchedUser?.length || searchedUser[0].id === userData.id);
+
   return (
     <main className="messenger-page">
       <div className="messenger-page__container">
         <div className="chats">
-          <MessengerControls userData={userData} setSearchQuery={setSearchQuery} />
-          {searchQuery ? (
-            searchQuery[0] === "@" ? (
-              <ChatsSearchList mode="global">
-                {globalSearchedUsers?.map((user) => {
+          <MessengerControls
+            userData={userData}
+            setGlobalSearchQuery={setGlobalSearchQuery}
+            setLocalSearchQuery={setLocalSearchQuery}
+          />
+          {globalSearchQuery && (
+            <ChatsSearchList mode="global">
+              {searchedUser?.map((user) => {
+                if (user.id !== userData.id) {
                   return (
                     <li key={user.userId}>
                       <ChatPreview
+                        onClick={() => {
+                          if (user.userId) {
+                            setSelectedChat({ userId: user.userId, isSelected: true });
+                          } else {
+                            throw new Error("Ошибка!");
+                          }
+                        }}
                         profileID={user.id}
                         photoURL={user.photoURL}
-                        isSelected={false}
+                        isSelected={selectedChat.isSelected && selectedChat.userId === user.userId}
                         nickname={user.nickname}
                       />
                     </li>
                   );
-                })}
-              </ChatsSearchList>
-            ) : (
-              false
-            )
-          ) : (
+                }
+              })}
+            </ChatsSearchList>
+          )}
+          {localSearchQuery && <ChatsSearchList mode="local"></ChatsSearchList>}
+          {isNoResult && !searchedUserLoading && <div className="chats__no-result">Совпадений не найдено</div>}
+          {searchedUserLoading && globalSearchQuery && <div className="chats__loading">Загрузка</div>}
+          {!localSearchQuery && !globalSearchQuery && (
             <ul className="chats-list">
               <li className="chats-list__item">
                 <ChatPreview
                   photoURL={savedMessages}
-                  onClick={() => {
-                    setIsSelected(!isSelected);
-                  }}
-                  isSelected={isSelected}
+                  onClick={() => {}}
+                  isSelected={false}
                   nickname="Избранное"
                   lastMessage="Привет"
                   lastMessageDate="18:00"
@@ -84,9 +119,25 @@ const Messenger: React.FC = () => {
             </ul>
           )}
         </div>
-        <div className="opened-chat">
-          <span className="opened-chat__starter">Выберите чат чтобы начать общение</span>
-        </div>
+
+        <CSSTransition
+          onExited={() => {
+            setSelectedChat((previousState) => {
+              return { ...previousState, userId: "" };
+            });
+          }}
+          nodeRef={openedChatRef}
+          in={selectedChat.isSelected}
+          timeout={390}>
+          <div ref={openedChatRef} className={`opened-chat`}>
+            {selectedChat.userId ? (
+              <Chat setIsSelected={setSelectedChat} myUserData={userData} userId={selectedChat.userId} />
+            ) : (
+              // <div className=""></div>
+              windowWidth > 1000 && <span className="opened-chat__starter">Выберите чат чтобы начать общение</span>
+            )}
+          </div>
+        </CSSTransition>
       </div>
     </main>
   );

@@ -9,7 +9,18 @@ import {
   browserLocalPersistence,
 } from "firebase/auth";
 import { IUserData } from "./types";
-import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+  serverTimestamp,
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -39,17 +50,24 @@ export const firebaseRegister = async ({ email, password, nickname }: IAuthPrope
       nickname,
       id: `@id${user.uid.slice(0, 8).toLowerCase()}`,
       userId: user.uid,
+      online: serverTimestamp()
     });
     return resultOfRegistration;
-  } catch (error: any) {
-    return error.message;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      return error.message;
+    }
   }
 };
 export const firebaseLogin = async ({ email, password }: IAuthProperties) => {
   try {
     return await signInWithEmailAndPassword(auth, email, password);
-  } catch (error: any) {
-    return error.message;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      return error.message;
+    }
   }
 };
 
@@ -59,10 +77,14 @@ export const firebaseUpdateProfile = async (userData: IUserData) => {
       updateDoc(doc(firestore, "users", auth.currentUser.uid), {
         ...userData,
       });
+
       return await updateProfile(auth.currentUser, { displayName: userData.nickname, photoURL: userData.photoURL });
     }
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      console.error(error.message);
+      return error.message;
+    }
   }
 };
 
@@ -70,6 +92,17 @@ export const isIdExists = async (id: string) => {
   try {
     const snapshot = await getDocs(query(collection(firestore, "users"), where("id", "==", `${id}`)));
     return snapshot.docs.length;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      return error.message;
+    }
+  }
+};
+
+export const refreshOnline = () => {
+  try {
+    firebaseUpdateProfile({ online: serverTimestamp() });
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
