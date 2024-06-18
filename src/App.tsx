@@ -4,16 +4,16 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { StyledEngineProvider } from "@mui/material";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 
-import { auth, firestore } from "./API/firebase";
-import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import "./App.scss";
-import { privateRoutes, publicRoutes } from "./router/path";
-import PageLoader from "./pages/pageLoader/PageLoader";
-import { setWindowWidth } from "./redux/reducers/CommonStatesSlice";
-import { IUserData } from "./API/types";
 import { doc } from "firebase/firestore";
+import { auth, firestore } from "./API/firebase";
+import { IUserData } from "./API/types";
+import "./App.scss";
+import PageLoader from "./pages/pageLoader/PageLoader";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { setWindowWidth } from "./redux/reducers/CommonStatesSlice";
+import { privateRoutes, publicRoutes } from "./router/path";
 
 const myTheme = createTheme({
   palette: {
@@ -51,7 +51,7 @@ const App: React.FC = () => {
     return <PageLoader />;
   }
 
-  const router = createBrowserRouter(user ? privateRoutes : publicRoutes);
+  const router = createBrowserRouter(user && userData ? privateRoutes : publicRoutes);
 
   return (
     <ThemeProvider theme={myTheme}>

@@ -8,14 +8,8 @@ import { IChangeDialogProps } from "./types";
 
 import InputMask from "react-input-mask";
 
-import { useIMask } from "react-imask";
-
 const IdChangeDialog: React.FC<IChangeDialogProps> = (props) => {
   const { userData, isDialogOpen, setIsDialogOpen } = props;
-
-  const [opts, setOpts] = useState({ mask: "" });
-
-  const { ref } = useIMask(opts);
 
   const [id, setId] = useState<string>(userData?.id ?? "");
   const [error, setError] = useState<string>("");

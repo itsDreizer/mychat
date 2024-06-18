@@ -55,6 +55,8 @@ const Chat: React.FC<IChatProps> = (props) => {
     reset();
   };
 
+  console.log("render CHAT");
+
   return (
     <div className="chat">
       <header className="chat-header">
@@ -70,7 +72,7 @@ const Chat: React.FC<IChatProps> = (props) => {
         )}
         <div className="chat-info">
           <div className="chat-info__name">{userData?.nickname}</div>
-          <div className={`chat-info__state ${chatState === "online" ? "online" : ""}`}>{`${chatState}`}</div>
+          <div className={`chat-info__state ${chatState === "online" ? "online" : ""}`}>{`${chatState || ""}`}</div>
         </div>
         <div className="chat-controls"></div>
       </header>

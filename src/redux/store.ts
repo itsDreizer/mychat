@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { authReducer } from "./reducers/AuthSlice";
 import { commonStatesReducer } from "./reducers/CommonStatesSlice";
+import { snackbarReducer } from "./reducers/SnackbarSlice";
 
 export const store = configureStore({
   reducer: {
     authReducer,
     commonStatesReducer,
+    snackbarReducer,
   },
 });
 

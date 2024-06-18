@@ -10,4 +10,9 @@ export interface IAuthProperties {
   password: string;
 }
 
+export interface ISelectedChat {
+  userId: string;
+  isSelected: boolean;
+}
+
 export type TMessageDeliveryState = "Отправлено" | "Прочитано" | "Загрузка";

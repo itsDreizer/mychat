@@ -1,12 +1,6 @@
 import { firebaseStorage, firebaseUpdateProfile } from "@/API/firebase";
 import { IUserData } from "@/API/types";
-import {
-  CameraAlt,
-  Close,
-  DriveFileRenameOutline,
-  Image as ImageIcon,
-  Link as LinkIcon
-} from "@mui/icons-material";
+import { CameraAlt, Close, DriveFileRenameOutline, Image as ImageIcon, Link as LinkIcon } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -22,7 +16,7 @@ import {
   ToggleButton,
 } from "@mui/material";
 import { debounce } from "lodash";
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import CustomMUIPopover from "../UI/customMUIPopover/CustomMUIPopover";
 import LiButton from "../UI/liButton/LiButton";
 
@@ -31,16 +25,16 @@ import { useUploadFile } from "react-firebase-hooks/storage";
 import IdChangeDialog from "./IdChangeDialog";
 import NicknameChangeDialog from "./NicknameChangeDialog";
 import "./ProfileMenu.scss";
+import { setIsClipboardSnackbarVisible } from "@/redux/reducers/SnackbarSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 interface IProfileMenuProps extends Omit<ModalProps, "children"> {
   handleClose: () => void;
   userData: IUserData;
-  setIsClipboardSnackbarVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileMenu: React.FC<IProfileMenuProps> = (props) => {
-  const { open, handleClose, userData, setIsClipboardSnackbarVisible, ...otherProps } = props;
-
+const ProfileMenu: React.FC<IProfileMenuProps> = memo((props) => {
+  const { open, handleClose, userData, ...otherProps } = props;
   const [isImagePopoverOpen, setIsImagePopoverOpen] = useState<boolean>(false);
   const [uploadFile] = useUploadFile();
 
@@ -48,11 +42,14 @@ const ProfileMenu: React.FC<IProfileMenuProps> = (props) => {
   const [isURLSubmitError, setIsURLSubmitError] = useState<boolean>(false);
   const [inputURLValue, setInputURLValue] = useState<string>("");
 
-  const [bio, setBio] = useState<string>(userData?.BIO ?? "");
+  const [bio, setBio] = useState<string>(userData?.BIO || "");
 
   const [isNicknameDialogOpen, setIsNicknameDialogOpen] = useState<boolean>(false);
 
   const [isIdDialogOpen, setIsIdDialogOpen] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+
 
   const updateBio = useCallback(
     debounce((data: string) => {
@@ -92,7 +89,7 @@ const ProfileMenu: React.FC<IProfileMenuProps> = (props) => {
           </header>
           <div className="profile-menu__user-info">
             <div className="profile-menu__block-img">
-              <Avatar src={userData?.photoURL} className="profile-menu__profile-img" />
+              <Avatar src={userData.photoURL} className="profile-menu__profile-img" />
               <button
                 onClick={() => {
                   setIsImagePopoverOpen(true);
@@ -108,15 +105,13 @@ const ProfileMenu: React.FC<IProfileMenuProps> = (props) => {
                 }}>
                 <ul>
                   <li>
-                    <label>
-                      <input
-                        className="hidden-input"
-                        onChange={updateAvatar}
-                        type="file"
-                        accept="image/png, image/jpeg, image/jpg"
-                      />
-                      <LiButton Icon={<ImageIcon />} text="Загрузить фотографию" />
-                    </label>
+                    <input
+                      className="hidden-input"
+                      onChange={updateAvatar}
+                      type="file"
+                      accept="image/png, image/jpeg, image/jpg"
+                    />
+                    <LiButton Icon={<ImageIcon />} text="Загрузить фотографию" />
                   </li>
                   <li>
                     <LiButton
@@ -135,7 +130,7 @@ const ProfileMenu: React.FC<IProfileMenuProps> = (props) => {
               onClick={(e) => {
                 if (e.currentTarget.textContent) {
                   navigator.clipboard.writeText(e.currentTarget.textContent);
-                  setIsClipboardSnackbarVisible(true);
+                  dispatch(setIsClipboardSnackbarVisible(true));
                 }
               }}
               color={"secondary"}
@@ -249,6 +244,6 @@ const ProfileMenu: React.FC<IProfileMenuProps> = (props) => {
       </Fade>
     </Modal>
   );
-};
+});
 
 export default ProfileMenu;

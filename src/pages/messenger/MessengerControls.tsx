@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 
 import { Avatar, Button, Dialog, DialogActions, DialogTitle, Link, List, TextField, ToggleButton } from "@mui/material";
 
@@ -8,11 +8,12 @@ import CustomMUISnackbar from "@/components/UI/customMUISnackbar/CustomMUISnackb
 import LiButton from "@/components/UI/liButton/LiButton";
 import MenuModal from "@/components/UI/menuModal/MenuModal";
 import ProfileMenu from "@/components/profileMenu/ProfileMenu";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setIsAuthLoading } from "@/redux/reducers/AuthSlice";
 import { AccountBox, Close, ExitToApp, HelpCenter, Menu } from "@mui/icons-material";
-import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import { useSignOut } from "react-firebase-hooks/auth";
 import { debounce } from "lodash";
+import { setIsClipboardSnackbarVisible } from "@/redux/reducers/SnackbarSlice";
 
 interface IMessengerControlsProps {
   setLocalSearchQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -20,15 +21,12 @@ interface IMessengerControlsProps {
   userData: IUserData;
 }
 
-const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
+const MessengerControls: React.FC<IMessengerControlsProps> = memo((props) => {
   const { setLocalSearchQuery, setGlobalSearchQuery, userData } = props;
-  const [signOut, signOutLoading, signOutError] = useSignOut(auth);
-  const [user, userLoading, userError] = useAuthState(auth);
+  const [signOut, signOutLoading] = useSignOut(auth);
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
   const [isSignOutDialogVisible, setIsSignOutDialogVisible] = useState<boolean>(false);
-  const [isClipboardSnackbarVisible, setIsClipboardSnackbarVisible] = useState<boolean>(false);
   const [isProfileMenuVisible, setIsProfileMenuVisible] = useState<boolean>(false);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -36,6 +34,10 @@ const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
   }, [signOutLoading]);
 
   const debouncedSetGlobalSearchQuery = useCallback(debounce(setGlobalSearchQuery, 1000), []);
+
+  const handleProfileClose = useCallback(() => {
+    setIsProfileMenuVisible(false);
+  }, [setIsProfileMenuVisible]);
 
   return (
     <div className="controls">
@@ -50,7 +52,7 @@ const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
             onClick={(e) => {
               if (e.currentTarget.textContent) {
                 navigator.clipboard.writeText(e.currentTarget.textContent);
-                setIsClipboardSnackbarVisible(true);
+                dispatch(setIsClipboardSnackbarVisible(true));
               }
             }}
             color={"secondary"}
@@ -117,24 +119,11 @@ const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
         </Dialog>
       </MenuModal>
       <ProfileMenu
-        setIsClipboardSnackbarVisible={setIsClipboardSnackbarVisible}
         userData={userData}
         open={isProfileMenuVisible}
-        handleClose={() => {
-          setIsProfileMenuVisible(false);
-        }}
+        handleClose={handleProfileClose}
       />
-      <CustomMUISnackbar
-        onClose={(e, reason) => {
-          if (reason === "clickaway") {
-            return;
-          }
-          setIsClipboardSnackbarVisible(false);
-        }}
-        open={isClipboardSnackbarVisible}
-        message={"Скопировано в буфер обмена!"}
-        autoHideDuration={3000}
-      />
+
       <TextField
         autoComplete="off"
         onChange={(e) => {
@@ -155,6 +144,6 @@ const MessengerControls: React.FC<IMessengerControlsProps> = (props) => {
       />
     </div>
   );
-};
+});
 
 export default MessengerControls;

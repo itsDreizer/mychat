@@ -1,13 +1,14 @@
 import { IUserData } from "@/API/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DateTime, Interval, DurationLikeObject } from "luxon";
 import { Timestamp } from "firebase/firestore";
+import { unitFormatter } from "@/utils/utils";
 
 export const useChatState = (userData?: IUserData, myUserData?: IUserData) => {
-  const [chatState, setChatState] = useState<string>();
+  const [chatState, setChatState] = useState<string>("был(а) в сети никогда");
 
   useEffect(() => {
-    if (userData) {
+    if (userData?.online) {
       (() => {
         const lastSeen = DateTime.fromJSDate((userData?.online as Timestamp).toDate());
         const dateNow = DateTime.now();
@@ -15,17 +16,16 @@ export const useChatState = (userData?: IUserData, myUserData?: IUserData) => {
         const interval = (unit: keyof DurationLikeObject) => {
           return Math.floor(Interval.fromDateTimes(lastSeen, dateNow).length(unit));
         };
+
         if (interval("days") && interval("days") < 2) {
-          setChatState(
-            `был(а) в сети вчера в ${lastSeen.hour < 10 ? "0" + lastSeen.hour : lastSeen.hour}:${lastSeen.minute}`
-          );
+          setChatState(`был(а) в сети вчера в ${unitFormatter(lastSeen.hour)}:${unitFormatter(lastSeen.minute)}`);
           return;
         }
         if (interval("days")) {
           setChatState(
-            `был(а) в сети ${lastSeen.day}.${lastSeen.month < 10 ? "0" + lastSeen.month : lastSeen.month}.${
+            `был(а) в сети ${unitFormatter(lastSeen.day)}.${unitFormatter(lastSeen.month)}.${
               lastSeen.year
-            } ${lastSeen.hour < 10 ? "0" + lastSeen.hour : lastSeen.hour}:${lastSeen.minute}`
+            } ${unitFormatter(lastSeen.hour)}:${unitFormatter(lastSeen.minute)}`
           );
           return;
         }
@@ -40,7 +40,10 @@ export const useChatState = (userData?: IUserData, myUserData?: IUserData) => {
           setChatState(`online`);
         }
       })();
+    } else {
+      setChatState("был(а) в сети никогда");
     }
   }, [userData, myUserData]);
+
   return { chatState };
 };

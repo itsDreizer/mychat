@@ -1,0 +1,16 @@
+.chats {
+  flex: 0 1 30%;
+  @media (max-width: 1400px) {
+    flex: 0 1 40%;
+  }
+  @media (max-width: 1000px) {
+    flex: 0 1 100%;
+  }
+}
+
+.chats__no-result {
+  padding: 15px 0px 0px 15px;
+}
+.chats__loading {
+  padding: 15px 0px 0px 15px;
+}
