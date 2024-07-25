@@ -50,7 +50,6 @@ const ProfileMenu: React.FC<IProfileMenuProps> = memo((props) => {
 
   const dispatch = useAppDispatch();
 
-
   const updateBio = useCallback(
     debounce((data: string) => {
       firebaseUpdateProfile({ BIO: data });
@@ -105,13 +104,16 @@ const ProfileMenu: React.FC<IProfileMenuProps> = memo((props) => {
                 }}>
                 <ul>
                   <li>
-                    <input
-                      className="hidden-input"
-                      onChange={updateAvatar}
-                      type="file"
-                      accept="image/png, image/jpeg, image/jpg"
-                    />
-                    <LiButton Icon={<ImageIcon />} text="Загрузить фотографию" />
+                    <label>
+                      <input
+                        className="hidden-input"
+                        onChange={updateAvatar}
+                        type="file"
+                        accept="image/png, image/jpeg, image/jpg"
+                      />
+
+                      <LiButton Icon={<ImageIcon />} text="Загрузить фотографию" />
+                    </label>
                   </li>
                   <li>
                     <LiButton
